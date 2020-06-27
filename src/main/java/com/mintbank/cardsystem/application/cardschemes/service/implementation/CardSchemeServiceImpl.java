@@ -88,25 +88,30 @@ public class CardSchemeServiceImpl implements CardSchemeService {
     public CardSchemeLogDTO getHitCount(int start, int limit) throws AppBaseException {
 
         CardSchemeLogDTO cardSchemeLogDTO = new CardSchemeLogDTO();
+
+        if(start < 1){
+            throw new AppBaseException("Page Number cannot be less than 1");
+        }
         Pageable pageable = PageRequest.of(start-1,limit);
 
         Page<CardSchemeLog> schemeRequestLogPage = cardSchemeLogRepo.fetchRequestLogs(pageable);
 
         cardSchemeLogDTO.setPage(start-1);
         cardSchemeLogDTO.setSize(limit);
-        cardSchemeLogDTO.setTotalCount(schemeRequestLogPage.getTotalElements());
-        cardSchemeLogDTO.setHasNextRecord(schemeRequestLogPage.hasNext());
 
         Map<String,Integer> stringMap = new HashMap<>();
 
-        schemeRequestLogPage.getContent().forEach(cardSchemeLog -> {
-            stringMap.put(cardSchemeLog.getCardBin(),cardSchemeLog.getVersion());
-        });
+        if(schemeRequestLogPage!=null){
+            cardSchemeLogDTO.setTotalCount(schemeRequestLogPage.getTotalElements());
+            cardSchemeLogDTO.setHasNextRecord(schemeRequestLogPage.hasNext());
+            schemeRequestLogPage.getContent().forEach(cardSchemeLog -> {
+                stringMap.put(cardSchemeLog.getCardBin(),cardSchemeLog.getVersion());
+            });
+        }
 
         cardSchemeLogDTO.setCardSchemeMap(stringMap);
 
-
-
+        System.out.println("am returning :: "+cardSchemeLogDTO);
         return cardSchemeLogDTO;
     }
 }

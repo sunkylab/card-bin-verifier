@@ -9,7 +9,7 @@ import java.util.Map;
 public class CardSchemeLogDTO {
 
     private boolean hasNextRecord;
-    private long totalCount;
+    private long totalCount=0;
     private int page;
     private int size;
 

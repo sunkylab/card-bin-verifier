@@ -40,6 +40,7 @@ public class CardSchemeController {
         }catch (AppBaseException e){
             logger.error("application exception:{}",e.getMessage());
             binResponseDTO.setSuccess(false);
+            binResponseDTO.setPayload(e.getMessage());
             responseEntity =  new ResponseEntity(binResponseDTO, HttpStatus.BAD_REQUEST);
         }catch (Exception e){
 
@@ -71,6 +72,7 @@ public class CardSchemeController {
         }catch (AppBaseException e){
             logger.error("Application exception {}",e.getMessage());
             hitCountResponseDTO.setSuccess(false);
+            hitCountResponseDTO.setPayload(e.getMessage());
             responseEntity =  new ResponseEntity(hitCountResponseDTO, HttpStatus.BAD_REQUEST);
         }catch (Exception e){
             e.printStackTrace();
