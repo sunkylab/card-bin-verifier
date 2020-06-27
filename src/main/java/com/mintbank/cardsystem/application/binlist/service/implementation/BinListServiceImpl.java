@@ -24,7 +24,7 @@ public class BinListServiceImpl implements BinListService {
     @Override
     public BinLookUpResponseDTO doBinLookUp(String bin_inn) throws AppBaseException {
 
-        String fullUrl = binListUrl.concat("/").concat(bin_inn.substring(0,8));
+        String fullUrl = binListUrl.concat("/").concat(bin_inn);
         HttpCustomClient customClient = new HttpCustomClient(fullUrl,null,"GET",null);
 
         BinLookUpResponseDTO lookUpResponseDTO = null;

@@ -33,8 +33,6 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
 
     protected final Date createdOn = new Date();
 
-    private Date updateOn;
-
 
 
     @Override
@@ -89,7 +87,6 @@ public abstract class AbstractEntity implements Serializable, SerializableEntity
         return "AbstractEntity{" +
                 "id=" + id +
                 ", createdOn=" + createdOn +
-                ", updateOn=" + updateOn +
                 '}';
     }
 }

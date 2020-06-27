@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Version;
+import java.util.Date;
 
 @Data
 @Table(name = "card_scheme_req_log")
@@ -16,5 +17,7 @@ public class CardSchemeLog extends AbstractEntity {
 
     @Version
     protected int version = 1;
+
+    private Date updateOn;
 
 }
