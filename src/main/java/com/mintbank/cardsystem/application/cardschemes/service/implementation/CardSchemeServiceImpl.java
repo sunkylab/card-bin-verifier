@@ -51,6 +51,9 @@ public class CardSchemeServiceImpl implements CardSchemeService {
         if(cardScheme==null){
             //Verify Card using BINLIST service
             BinLookUpResponseDTO lookUpResponseDTO  = binListService.doBinLookUp(bin_inn);
+            if(lookUpResponseDTO.getBank()==null){
+                throw new AppBaseException("Bin is invalid");
+            }
             cardSchemeDTO.setBank(lookUpResponseDTO.getBank().getName());
             cardSchemeDTO.setScheme(lookUpResponseDTO.getScheme());
             cardSchemeDTO.setType(lookUpResponseDTO.getType());

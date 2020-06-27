@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Mint Bank</title>
+    <meta content="" name="descriptison">
+    <meta content="" name="keywords">
+
+    <style>
+        body {
+            margin:15px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .code {
+            margin:20px
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<div></div>
+<h4>API Documentation</h4>
+
+The API is JSON based, RESTful service that and requires no Authentication
+
+Service methods with sample request and response is shown below
+
+<div class="code" >
+    <h5>Verify Card</h5>
+    This method allows card details to be fetched, this way it can be determined if the card is valid or not
+    <table >
+        <tr>
+            <th>Key</th>
+            <th>Values</th>
+        </tr>
+        <tr>
+            <td>URL</td>
+            <td>/card-scheme/verify/{cardbin}</td>
+        </tr>
+        <tr>
+            <td>cardbin</td>
+            <td>first 4 or 8 digits of the card </td>
+        </tr>
+        <tr>
+            <td>Sample Request </td>
+            <td>
+				<pre>
+curl -X GET --header 'Accept: application/json' 'http://localhost:8200/card-scheme/verify/42513433'
+				</pre>
+            </td>
+        </tr>
+        <tr>
+            <td>Sample Response </td>
+            <td>
+				<pre>
+{
+  "success": true,
+  "payload": {
+	"scheme": "visa",
+	"type": "debit",
+	"bank": "BANK BPH, S.A."
+  }
+}
+				</pre>
+            </td>
+        </tr>
+
+    </table>
+
+    <h5>Hit Count</h5>
+    This method gives a statistics of number of times each specifc card number was verified
+    <table >
+        <tr>
+            <th>Key</th>
+            <th>Values</th>
+        </tr>
+        <tr>
+            <td>URL</td>
+            <td>card-scheme/stats?start={pageNumber}&limit={recordPerPage}</td>
+        </tr>
+        <tr>
+            <td>pageNumber</td>
+            <td>Page number of result to return from paginated list</td>
+        </tr>
+        <tr>
+            <td>recordPerPage</td>
+            <td>Number of records expected in each page</td>
+        </tr>
+        <tr>
+            <td>Sample Request </td>
+            <td>
+				<pre>
+curl -X GET --header 'Accept: application/json' 'http://localhost:8200/card-scheme/stats?start=1&limit=2'
+				</pre>
+            </td>
+        </tr>
+        <tr>
+            <td>Sample Response </td>
+            <td>
+				<pre>
+{
+  "success": true,
+  "payload": {
+    "42513433": 3
+  },
+  "start": 1,
+  "limit": 2,
+  "size": 1
+}
+				</pre>
+            </td>
+        </tr>
+
+    </table>
+
+
+</div>
+
+</body>
+
+</html>

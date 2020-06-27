@@ -38,7 +38,7 @@ public class CardSchemeController {
             responseEntity = new ResponseEntity(binResponseDTO, HttpStatus.OK);
 
         }catch (AppBaseException e){
-            logger.error("Application exception {}",e.getMessage());
+            logger.error("application exception:{}",e.getMessage());
             binResponseDTO.setSuccess(false);
             responseEntity =  new ResponseEntity(binResponseDTO, HttpStatus.BAD_REQUEST);
         }catch (Exception e){
