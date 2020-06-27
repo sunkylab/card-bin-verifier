@@ -3,8 +3,8 @@ package com.mintbank.cardsystem.api.cardschemes.controller;
 
 import com.mintbank.cardsystem.api.cardschemes.dto.HitCountResponseDTO;
 import com.mintbank.cardsystem.api.cardschemes.dto.VerifyBinResponseDTO;
+import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeDTO;
 import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeLogDTO;
-import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeResponseDTO;
 import com.mintbank.cardsystem.application.cardschemes.service.CardSchemeService;
 import com.mintbank.cardsystem.core.exceptions.AppBaseException;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ public class CardSchemeController {
         ResponseEntity<?> responseEntity;
 
         try{
-            CardSchemeResponseDTO schemeResponseDTO = cardSchemeService.getCardScheme(binInn);
+            CardSchemeDTO schemeResponseDTO = cardSchemeService.getCardScheme(binInn);
             binResponseDTO.setSuccess(true);
             binResponseDTO.setPayload(schemeResponseDTO);
             responseEntity = new ResponseEntity(binResponseDTO, HttpStatus.OK);

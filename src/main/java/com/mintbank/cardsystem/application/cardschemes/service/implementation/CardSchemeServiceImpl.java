@@ -2,11 +2,13 @@ package com.mintbank.cardsystem.application.cardschemes.service.implementation;
 
 import com.mintbank.cardsystem.application.binlist.dto.BinLookUpResponseDTO;
 import com.mintbank.cardsystem.application.binlist.service.BinListService;
+import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeDTO;
 import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeLogDTO;
-import com.mintbank.cardsystem.application.cardschemes.dto.CardSchemeResponseDTO;
 import com.mintbank.cardsystem.application.cardschemes.entity.CardSchemeLog;
 import com.mintbank.cardsystem.application.cardschemes.repository.CardSchemeLogRepo;
 import com.mintbank.cardsystem.application.cardschemes.service.CardSchemeService;
+import com.mintbank.cardsystem.application.kafka.dto.Message;
+import com.mintbank.cardsystem.application.kafka.service.KafkaService;
 import com.mintbank.cardsystem.core.exceptions.AppBaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,17 +33,22 @@ public class CardSchemeServiceImpl implements CardSchemeService {
     @Autowired
     BinListService binListService;
 
+    @Autowired
+    KafkaService kafkaService;
+
     @Override
-    public CardSchemeResponseDTO getCardScheme(String bin_inn) throws AppBaseException {
+    public CardSchemeDTO getCardScheme(String bin_inn) throws AppBaseException {
 
-        CardSchemeResponseDTO cardSchemeResponseDTO = new CardSchemeResponseDTO();
+        CardSchemeDTO cardSchemeDTO = new CardSchemeDTO();
 
+        //Verify Card using binlist service
         BinLookUpResponseDTO lookUpResponseDTO  = binListService.doBinLookUp(bin_inn);
 
-        cardSchemeResponseDTO.setBank(lookUpResponseDTO.getBank().getName());
-        cardSchemeResponseDTO.setScheme(lookUpResponseDTO.getScheme());
-        cardSchemeResponseDTO.setType(lookUpResponseDTO.getType());
+        cardSchemeDTO.setBank(lookUpResponseDTO.getBank().getName());
+        cardSchemeDTO.setScheme(lookUpResponseDTO.getScheme());
+        cardSchemeDTO.setType(lookUpResponseDTO.getType());
 
+        //log request counter to table
         CardSchemeLog  cardSchemeLog = cardSchemeLogRepo.findByCardBin(bin_inn);
         if(cardSchemeLog!=null){
             cardSchemeLog.setUpdateOn(new Date());
@@ -54,8 +61,13 @@ public class CardSchemeServiceImpl implements CardSchemeService {
             cardSchemeLogRepo.save(cardSchemeLog);
         }
 
+        //produce kafka message to notify card verification done
+        Message message = new Message(cardSchemeDTO);
+        System.out.println(message);
+        kafkaService.produceMessage(message);
 
-        return cardSchemeResponseDTO;
+
+        return cardSchemeDTO;
     }
 
     @Override
