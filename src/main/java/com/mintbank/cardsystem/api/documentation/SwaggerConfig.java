@@ -17,7 +17,7 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.mintbank.card_system.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.mintbank.cardsystem.api"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(metaData());

@@ -25,14 +25,62 @@ public class CardSchemeServiceImpl implements CardSchemeService {
 
     private static final Logger logger = LoggerFactory.getLogger(CardSchemeServiceImpl.class);
 
+    @Autowired
+    CardSchemeLogRepo cardSchemeLogRepo;
+
+    @Autowired
+    BinListService binListService;
 
     @Override
     public CardSchemeResponseDTO getCardScheme(String bin_inn) throws AppBaseException {
-        return null;
+
+        CardSchemeResponseDTO cardSchemeResponseDTO = new CardSchemeResponseDTO();
+
+        BinLookUpResponseDTO lookUpResponseDTO  = binListService.doBinLookUp(bin_inn);
+
+        cardSchemeResponseDTO.setBank(lookUpResponseDTO.getBank().getName());
+        cardSchemeResponseDTO.setScheme(lookUpResponseDTO.getScheme());
+        cardSchemeResponseDTO.setType(lookUpResponseDTO.getType());
+
+        CardSchemeLog  cardSchemeLog = cardSchemeLogRepo.findByCardBin(bin_inn);
+        if(cardSchemeLog!=null){
+            cardSchemeLog.setUpdateOn(new Date());
+            /**Updates version count**/
+            cardSchemeLogRepo.save(cardSchemeLog);
+        }else{
+            cardSchemeLog = new CardSchemeLog();
+            /**sets version count to 1**/
+            cardSchemeLog.setCardBin(bin_inn);
+            cardSchemeLogRepo.save(cardSchemeLog);
+        }
+
+
+        return cardSchemeResponseDTO;
     }
 
     @Override
     public CardSchemeLogDTO getHitCount(int start, int limit) throws AppBaseException {
-        return null;
+
+        CardSchemeLogDTO cardSchemeLogDTO = new CardSchemeLogDTO();
+        Pageable pageable = PageRequest.of(start-1,limit);
+
+        Page<CardSchemeLog> schemeRequestLogPage = cardSchemeLogRepo.fetchRequestLogs(pageable);
+
+        cardSchemeLogDTO.setPage(start-1);
+        cardSchemeLogDTO.setSize(limit);
+        cardSchemeLogDTO.setTotalCount(schemeRequestLogPage.getTotalElements());
+        cardSchemeLogDTO.setHasNextRecord(schemeRequestLogPage.hasNext());
+
+        Map<String,Integer> stringMap = new HashMap<>();
+
+        schemeRequestLogPage.getContent().forEach(cardSchemeLog -> {
+            stringMap.put(cardSchemeLog.getCardBin(),cardSchemeLog.getVersion());
+        });
+
+        cardSchemeLogDTO.setCardSchemeMap(stringMap);
+
+
+
+        return cardSchemeLogDTO;
     }
 }
